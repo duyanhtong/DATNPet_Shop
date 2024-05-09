@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  nestapp:
+    container_name: nestapp
+    build: . # Builds the image from the current directory (your NestJS project)
+    ports:
+      - 4000:4000 # Maps port 4000 of the container to port 4000 of your host machine
+    environment:
+      - DB_TYPE=${DATABASE_TYPE}
+      - PG_HOST=${DATABASE_HOST}
+      - PG_PORT=${DATABASE_PORT}
+      - PG_USER=${DATABASE_USERNAME}
+      - PG_PASSWORD=${DATABASE_PASSWORD}
+      - PG_DB=${DATABASE_NAME}
+    depends_on:
+      - db # Waits for the db service to be up before starting nestapp
+
+  db:
+    container_name: db
+    image: postgres:14-alpine # Uses the official PostgreSQL image (version 14 with Alpine Linux)
+    ports:
+      - 5432:5432 # Maps port 5432 of the container to port 5432 of your host machine
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persistent storage for the database
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=meogaixinh@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    ports:
+      - '5050:80'
+volumes:
+  pgdata: {} # Empty volume definition for pgdata

@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <style>
+      body { font-family: Arial, sans-serif; } .order-info { margin-bottom:
+      20px; } .order-info h2 { color: #333; } .order-detail, .shipping-info,
+      .product-list { margin-bottom: 20px; } .product-item { border-bottom: 1px
+      solid #eee; padding: 10px 0; } .product-item:last-child { border-bottom:
+      none; } .product-name { font-weight: bold; } .product-price { color:
+      #007BFF; }
+    </style>
+  </head>
+  <body>
+    <div class='order-info'>
+      <h2>Đơn hàng #{{id}} đã được đặt thành công!</h2>
+      <p><strong>Người nhận:</strong> {{full_name}}</p>
+      <p><strong>Số điện thoại:</strong> {{phone_number}}</p>
+      <p><strong>Phương thức thanh toán:</strong> {{payment_method}}</p>
+      <p><strong>Tổng tiền:</strong> {{total_money}} VND</p>
+      <p><strong>Phí vận chuyển:</strong> {{fee_shipping}} VND</p>
+      <p><strong>Trạng thái:</strong> {{status}}</p>
+      <p><strong>Ngày giao hàng dự kiến:</strong> {{expected_shipping_date}}</p>
+    </div>
+
+    <div class='shipping-info'>
+      <h3>Thông tin giao hàng</h3>
+      <p>{{detail_address}}, {{ward}}, {{district}}, {{province}}</p>
+    </div>
+
+    <div class='product-list'>
+      <h3>Sản phẩm trong đơn hàng</h3>
+      {{#cartItems}}
+        <div class='product-item'>
+          <img
+            src='{{image}}'
+            alt='{{product_name}}'
+            style='width:100px;height:auto;'
+          />
+          <p class='product-name'>{{product_name}}
+            -
+            {{product_variant_name}}</p>
+          <p>Giá: <span class='product-price'>{{price}} VND</span></p>
+          <p>Số lượng: {{quantity}}</p>
+        </div>
+      {{/cartItems}}
+    </div>
+  </body>
+</html>
