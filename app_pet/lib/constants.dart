@@ -29,6 +29,10 @@ const defaultPadding = 16.0;
 
 const double exchangeRate = 25195;
 
+const String clientIDPayPal =
+    "AQrbDy3aNylV7l1k4htuiF2dqYgeY9h112kEQJU3KHJuNbfbio9Qy8dnJVsiuMq8tnDbfF4T8hfYMo8N";
+const String secretKeyPayPal =
+    "EMiSltda4t_AZ0-rH86fZEyfnzm7zwWNeSwlO2rotkEVTptdR6Lir6uvhmcVdzdyDMu9UF-q7zRFgAql";
 // Form Error
 final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
