@@ -25,13 +25,13 @@ class _CartScreenState extends State<CartScreen> {
   bool _isLoading = false;
   int currentPage = 1;
   bool _isFetchingMore = false;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    loadCartItems(); // Gọi hàm loadCartItems() để tải dữ liệu từ API
+    loadCartItems();
   }
 
   void _scrollListener() {
@@ -59,6 +59,7 @@ class _CartScreenState extends State<CartScreen> {
           } else {
             cartItems = newCartItems;
           }
+          updateSelectedItems();
         });
       } catch (error) {
         debugPrint('Failed to load more cartItem: $error');
@@ -74,24 +75,39 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  void updateQuantity(int quantity, int cartId) async {
+  Future<void> updateQuantity(int quantity, int cartId) async {
     if (quantity > 0) {
       setState(() {
         _isLoading = true;
       });
-      String message = await Api.updateCart(cartId, quantity);
-      if (message == "OK") {
-        loadCartItems();
-      } else {
-        showCustomDialog(context, "Giỏ hàng", message);
-        loadCartItems();
+      try {
+        String message = await Api.updateCart(cartId, quantity);
+        if (message == "OK") {
+          setState(() {
+            cartItems = cartItems.map((item) {
+              if (item.id == cartId) {
+                return item.copyWith(quantity: quantity);
+              }
+              return item;
+            }).toList();
+            updateSelectedItems();
+          });
+        } else {
+          showCustomDialog(context, "Giỏ hàng", message);
+        }
+      } catch (error) {
+        showCustomDialog(context, "Error", error.toString());
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     } else {
       // Handle when quantity is 0 or negative (e.g., remove the product)
     }
   }
 
-  void updateSelectedItems(List<CartItem> cartItems) {
+  void updateSelectedItems() {
     setState(() {
       selectedCartItems = cartItems
           .where((item) => itemSelected[item.productVariantId] == true)
@@ -122,15 +138,16 @@ class _CartScreenState extends State<CartScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : cartItems.isEmpty
-                ? Center(child: Text("Không có sản phẩm nào trong giỏ hàng."))
+                ? const Center(
+                    child: Text("Không có sản phẩm nào trong giỏ hàng."))
                 : ListView.builder(
                     controller: _scrollController,
                     itemCount: cartItems.length + (_isFetchingMore ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == cartItems.length && _isFetchingMore) {
-                        return Center(
+                        return const Center(
                             child: CircularProgressIndicator(
                                 color: kPrimaryColor));
                       }
@@ -146,7 +163,7 @@ class _CartScreenState extends State<CartScreen> {
                               setState(() {
                                 cartItems.removeAt(index);
                                 itemSelected.remove(item.productVariantId);
-                                updateSelectedItems(cartItems);
+                                updateSelectedItems();
                               });
                             } else {
                               showCustomDialog(context, "Giỏ hàng", result);
@@ -169,14 +186,12 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Checkbox(
                                 value: itemSelected[item.productVariantId] ??
-                                    false, // Thiết lập giá trị mặc định là false nếu giá trị là null
+                                    false,
                                 onChanged: (bool? newValue) {
                                   setState(() {
-                                    itemSelected[
-                                        item
-                                            .productVariantId] = newValue ??
-                                        false; // Thiết lập giá trị mặc định là false nếu giá trị là null
-                                    updateSelectedItems(cartItems);
+                                    itemSelected[item.productVariantId] =
+                                        newValue ?? false;
+                                    updateSelectedItems();
                                   });
                                 },
                               ),

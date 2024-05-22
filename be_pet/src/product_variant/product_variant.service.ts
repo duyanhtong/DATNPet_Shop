@@ -163,7 +163,7 @@ export class ProductVariantService {
 
   async remove(id: number): Promise<any> {
     const productVariant = await this.checkProductVariantId(id);
-    await this.productVariantRepository.softDelete(productVariant);
+    await this.productVariantRepository.softDelete(id);
     return {
       message: 'Xoá phân loại thành công',
       productVariant,

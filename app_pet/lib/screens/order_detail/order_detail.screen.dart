@@ -1,10 +1,11 @@
-import 'package:flutter/foundation.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/components/icon_text_padding.dart';
 import 'package:shop_app/constants.dart';
-import 'package:shop_app/models/CartItem.model.dart';
+
 import 'package:shop_app/models/order.model.dart';
 import 'package:shop_app/screens/order/order.screen.dart';
 import 'package:shop_app/screens/preview_order/components/cart_order.componenr.dart';
@@ -47,7 +48,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(
-                child: Text('Có lỗi xảy ra. Vui lòng thử lại!'));
+              child: Text('Có lỗi xảy ra. Vui lòng thử lại!'),
+            );
           } else if (snapshot.data == null) {
             return const Center(child: Text('Không tìm thấy đơn hàng'));
           } else {
@@ -180,8 +182,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             builder: (context) => const Center(
                                 child: CircularProgressIndicator()),
                           );
-
-                          print(widget.orderId);
                           String result = await Api.updateStatusOrder(
                               orderId: widget.orderId,
                               status: OrderStatusEnum.Cancel);
@@ -194,12 +194,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               "Đơn hàng",
                               "Đơn hàng đã được huỷ thành công",
                             );
-                            await Future.delayed(const Duration(seconds: 3));
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              OrdersScreen.routeName,
-                              (route) => false,
-                            );
+                            await Future.delayed(const Duration(seconds: 2));
+                            Navigator.pop(context);
+                            Navigator.pop(context);
                           } else {
                             showCustomDialog(context, "Đơn hàng", result);
                           }

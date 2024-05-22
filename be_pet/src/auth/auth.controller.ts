@@ -28,6 +28,7 @@ export class AuthController extends BaseController {
   @Post('register')
   async register(@Body() body: RegisterUserDto): Promise<any> {
     try {
+      console.log('run api register');
       const result = await this.authService.register(body);
       if (result instanceof CommonError) {
         throw result;
@@ -44,6 +45,7 @@ export class AuthController extends BaseController {
   @Post('login')
   async login(@Body() body: LoginDto): Promise<any> {
     try {
+      console.log('run api login');
       const result = await this.authService.login(body);
       if (result instanceof CommonError) {
         throw result;

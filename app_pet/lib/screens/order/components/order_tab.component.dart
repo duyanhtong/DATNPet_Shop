@@ -41,33 +41,73 @@ class _OrdersTabState extends State<OrdersTab> {
     if (!widget.isAdmin && widget.nameTab == OrderStatusEnum.Delivered) {
       getListFeedback(status: "pending");
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _listenForScreenChanges();
+    });
+  }
+
+  void _listenForScreenChanges() {
+    ModalRoute.of(context)!.addScopedWillPopCallback(() async {
+      await _refreshOrders();
+      return true;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _refreshOrders();
+  }
+
+  @override
+  void didUpdateWidget(covariant OrdersTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.status != widget.status ||
+        oldWidget.isAdmin != widget.isAdmin ||
+        oldWidget.nameTab != widget.nameTab) {
+      _refreshOrders();
+    }
+  }
+
+  Future<void> _refreshOrders() async {
+    setState(() {
+      orders.clear();
+      _currentPage = 1;
+    });
+    await _loadOrders();
   }
 
   Future<void> _loadOrders({bool isFetchingMore = false}) async {
-    if (!_isLoading || (isFetchingMore && !_isFetchingMore)) {
-      if (isFetchingMore) {
-        setState(() => _isFetchingMore = true);
-        setState(() => _isLoading = true);
-      }
-      try {
-        final List<OrderModel> newOrders = await Api.getOrderByStatus(
-            status: widget.status, page: _currentPage);
+    if (_isLoading) return;
+
+    if (mounted) {
+      setState(() {
+        if (isFetchingMore) {
+          _isFetchingMore = true;
+        } else {
+          _isLoading = true;
+        }
+      });
+    }
+
+    try {
+      final List<OrderModel> newOrders =
+          await Api.getOrderByStatus(status: widget.status, page: _currentPage);
+      if (mounted) {
         setState(() {
           orders.addAll(newOrders);
-          if (isFetchingMore) {
-            _isFetchingMore = false;
-          } else {
-            _isLoading = false;
-          }
+          _currentPage++;
         });
-      } catch (error) {
-        debugPrint('Failed to load more order: $error');
+      }
+    } catch (error) {
+      debugPrint('Failed to load more orders: $error');
+    } finally {
+      if (mounted) {
         setState(() {
-          if (isFetchingMore) {
-            _isFetchingMore = false;
-          } else {
-            _isLoading = false;
-          }
+          _isLoading = false;
+          _isFetchingMore = false;
         });
       }
     }
@@ -80,6 +120,13 @@ class _OrdersTabState extends State<OrdersTab> {
       _currentPage++;
       _loadOrders(isFetchingMore: true);
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,30 +179,22 @@ class _OrdersTabState extends State<OrdersTab> {
 
     return ListView.builder(
       controller: _scrollController,
-      itemCount: orders.length +
-          (_isFetchingMore ? 1 : 0), // Thêm 1 cho CircularProgressIndicator
+      itemCount: orders.length + (_isFetchingMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index == orders.length && _isFetchingMore) {
           return const Center(
-              child: CircularProgressIndicator(color: kPrimaryColor));
+            child: CircularProgressIndicator(color: kPrimaryColor),
+          );
         }
 
         if (!widget.isAdmin &&
             widget.nameTab == OrderStatusEnum.Delivered &&
             orders[index].status == OrderStatusEnum.Delivered) {
-          // isReview = !feedbacks
-          //     .any((feedback) => feedback.orderId == orders[index].id);
           for (final feedback in feedbacks) {
             if (feedback.orderId == orders[index].id) {
               isReview = false;
             }
           }
-        }
-        // print('Danh sách orderId orders:');
-        // print(orders[index].id);
-        print('Danh sách orderId trong feedbacks:');
-        for (final feedback in feedbacks) {
-          print(feedback.orderId);
         }
 
         return OrderCard(
@@ -163,7 +202,7 @@ class _OrdersTabState extends State<OrdersTab> {
             isAdmin: isAdmin,
             nameTab: widget.nameTab,
             isReview: isReview,
-            onOrderConfirmed: () => _loadOrders());
+            onOrderConfirmed: _refreshOrders);
       },
     );
   }
@@ -171,9 +210,11 @@ class _OrdersTabState extends State<OrdersTab> {
   Future<void> getListFeedback({String? status}) async {
     try {
       final res = await Api.getListFeedback(status: status);
-      setState(() {
-        feedbacks = res;
-      });
+      if (mounted) {
+        setState(() {
+          feedbacks = res;
+        });
+      }
     } catch (error) {
       print(error.toString());
     }

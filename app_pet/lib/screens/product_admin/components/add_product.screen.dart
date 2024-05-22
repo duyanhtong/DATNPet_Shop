@@ -1,12 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/constants.dart';
-import 'package:shop_app/models/product.model.dart';
 
-import 'package:shop_app/models/product_variant.model.dart';
 import 'package:shop_app/services/api.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -128,7 +128,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   void _submitForm() async {
-    // Show loading dialog
     _showLoadingDialog(context);
 
     if (_imageProduct != null &&
@@ -147,7 +146,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
       Navigator.pop(context);
       if (result == "OK") {
         showCustomDialog(context, "Sản phẩm", "Thêm mới sản phẩm thành công");
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 2));
+        Navigator.pop(context);
       } else {
         showCustomDialog(context, "Sản phẩm", result);
       }

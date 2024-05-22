@@ -1,4 +1,4 @@
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shop_app/services/api.dart';
@@ -61,7 +61,7 @@ class _OrderPieChartState extends State<OrderPieChart> {
           children: [
             Text(
               widget.title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 38),
             Expanded(
@@ -73,7 +73,7 @@ class _OrderPieChartState extends State<OrderPieChart> {
                 ),
               ),
             ),
-            SizedBox(height: 28),
+            const SizedBox(height: 28),
             Expanded(
               child: ListView.builder(
                 itemCount: sections.length,

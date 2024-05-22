@@ -26,19 +26,19 @@ class _ColorDotsState extends State<ColorDots> {
 
   @override
   Widget build(BuildContext context) {
-    // Lấy giá và tỷ lệ giảm giá của variant hiện tại
+    
     final currentVariant = widget.product.productVariant[selectedVariant];
     final price = currentVariant.price;
-    final discountRate = currentVariant.discountRate ?? 0; // Coi null là 0
+    final discountRate = currentVariant.discountRate ?? 0; 
     final totalPrice = price * quantity;
     final discountAmount =
         discountRate > 0 ? (totalPrice * discountRate) / 100 : 0;
     final totalPriceAfterDiscount = discountRate > 0
         ? totalPrice - discountAmount
-        : totalPrice; // Chỉ áp dụng giảm giá nếu discountRate > 0
+        : totalPrice; 
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+      padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
       child: Column(
         children: [
           Row(
@@ -113,13 +113,13 @@ class _ColorDotsState extends State<ColorDots> {
                     Expanded(
                       child: Text(
                         'Tổng tiền: đ${totalPrice.toStringAsFixed(2)}',
-                        style: TextStyle(fontSize: 14.0),
+                        style: const TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         '-    Giảm giá: đ${discountAmount.toStringAsFixed(2)}',
-                        style: TextStyle(fontSize: 14.0),
+                        style: const TextStyle(fontSize: 14.0),
                       ),
                     ),
                   ],

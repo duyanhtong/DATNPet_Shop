@@ -20,18 +20,18 @@ class AddressCard extends StatelessWidget {
         onSelected();
       },
       child: Card(
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: ListTile(
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Họ và tên: ${address.fullname}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text('Số điện thoại: ${address.phoneNumber}'),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 'Địa chỉ: ${address.detailAddress}, ${address.ward}, ${address.district}, ${address.province}',
               ),

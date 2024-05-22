@@ -19,7 +19,7 @@ class _ListProductReviewScreenState extends State<ListProductReviewScreen> {
   List<FeedbackModel> _feedbacks = [];
   ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
-  int _currentPage = 1; // 현재 페이지를 추적합니다.
+  int _currentPage = 1;
 
   @override
   void initState() {
@@ -33,13 +33,15 @@ class _ListProductReviewScreenState extends State<ListProductReviewScreen> {
       final feedbacks = await Api.getListFeedbackPublic(
         status: 'reviewed',
         product_id: widget.productId,
-        page: _currentPage, // API 호출 시 현재 페이지 번호를 포함합니다.
+        page: _currentPage,
       );
-      setState(() {
-        _currentPage++; // 성공적으로 데이터를 받아온 후 페이지 번호를 증가시킵니다.
-        _isLoading = false; // 로딩 상태를 false로 설정합니다.
-        _feedbacks.addAll(feedbacks); // 새로운 피드백을 기존 리스트에 추가합니다.
-      });
+      if (feedbacks.isNotEmpty) {
+        setState(() {
+          _currentPage++;
+          _feedbacks.addAll(feedbacks);
+        });
+      }
+      _isLoading = false;
       return _feedbacks;
     } catch (error) {
       print('Error fetching feedbacks: $error');
@@ -51,16 +53,17 @@ class _ListProductReviewScreenState extends State<ListProductReviewScreen> {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       if (!_isLoading) {
-        // 추가 데이터 로딩 중이 아니라면
-        _isLoading = true; // 로딩 상태를 true로 변경합니다.
-        _getListFeedback(); // 추가 데이터를 로드합니다.
+        setState(() {
+          _isLoading = true;
+        });
+        _getListFeedback();
       }
     }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose(); // 컨트롤러를 정리합니다.
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -87,6 +90,10 @@ class _ListProductReviewScreenState extends State<ListProductReviewScreen> {
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return const Icon(Icons.error);
+                },
               ),
             if (feedback.comment != null) Text(feedback.comment!),
           ],
@@ -108,18 +115,23 @@ class _ListProductReviewScreenState extends State<ListProductReviewScreen> {
           return Center(
             child: Text('Error: ${snapshot.error}'),
           );
-        } else if (snapshot.hasData) {
+        } else if (snapshot.hasData && _feedbacks.isEmpty) {
+          return const Center(
+            child: Text('Sản phẩm chưa có đánh giá'),
+          );
+        } else {
           return ListView.builder(
             controller: _scrollController,
-            itemCount: _feedbacks.length,
+            itemCount: _feedbacks.length + 1,
             itemBuilder: (context, index) {
+              if (index == _feedbacks.length) {
+                return _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : const SizedBox.shrink();
+              }
               final feedback = _feedbacks[index];
               return buildFeedbackCard(feedback);
             },
-          );
-        } else {
-          return const Center(
-            child: Text('Không có feedback nào'),
           );
         }
       },

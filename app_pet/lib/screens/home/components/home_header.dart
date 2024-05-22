@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/screens/cart/components/cart_icon_button.dart';
 import 'package:shop_app/services/api.dart';
 
-import '../../cart/cart_screen.dart';
+
 import 'icon_btn_with_counter.dart';
 import 'search_field.dart';
 
@@ -38,7 +38,7 @@ class _HomeHeaderState extends State<HomeHeader> {
     } catch (error) {
       print('Error loading cart items: $error');
       setState(() {
-        // _isLoading = false;
+        _isLoading = false;
       });
     }
   }
@@ -62,7 +62,7 @@ class _HomeHeaderState extends State<HomeHeader> {
           const SizedBox(width: 8),
           IconBtnWithCounter(
             svgSrc: "assets/icons/Bell.svg",
-            numOfitem: 3,
+            numOfitem: 0,
             press: () {},
           ),
         ],

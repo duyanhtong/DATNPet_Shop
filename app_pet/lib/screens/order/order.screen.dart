@@ -29,10 +29,11 @@ class _OrdersScreenState extends State<OrdersScreen>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/profile', (route) => false)
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //     context, '/', (route) => false)
+                  Navigator.pop(context)
                 }),
         title: const Text(
           'Danh sách đơn hàng',

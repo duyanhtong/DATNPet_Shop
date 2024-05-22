@@ -6,7 +6,7 @@ import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/constants.dart';
 import 'package:shop_app/models/product.model.dart';
 import 'package:shop_app/models/product_variant.model.dart';
-import 'package:shop_app/screens/product_admin/product_admin.screen.dart';
+
 import 'package:shop_app/screens/product_variant_admin/add-product_variant_admin.screen.dart';
 import 'package:shop_app/screens/product_variant_admin/product_variant_admin.screen.dart';
 import 'package:shop_app/services/api.dart';
@@ -172,7 +172,9 @@ class _ProductDetailsAdminScreenState extends State<ProductDetailsAdminScreen> {
     if (result == "OK") {
       showCustomDialog(
           context, "Sản phẩm", "Cập nhật thông tin sản phẩm thành công");
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 2));
+      Navigator.pop(context);
+      Navigator.pop(context);
     } else {
       showCustomDialog(context, "Sản phẩm", result);
     }
@@ -188,6 +190,12 @@ class _ProductDetailsAdminScreenState extends State<ProductDetailsAdminScreen> {
             color: kPrimaryColor,
             fontSize: 16.0,
           ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -460,6 +468,9 @@ class _ProductDetailsAdminScreenState extends State<ProductDetailsAdminScreen> {
                           ),
                         );
                       },
+                      onLongPress: () {
+                        _showDeleteDialog(variant);
+                      },
                       child: Container(
                         width: 150, // Độ rộng của mỗi card product variant
                         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -582,5 +593,59 @@ class _ProductDetailsAdminScreenState extends State<ProductDetailsAdminScreen> {
 
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _showDeleteDialog(ProductVariantModel productVariant) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Phân loại sản phẩm',
+          style: TextStyle(color: kPrimaryColor),
+        ),
+        content: const Text('Bạn có chắc chắn muốn xóa phân loại này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(), // Đóng dialog
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              String resultMessage =
+                  await Api.removeProductVariant(productVariant.id);
+              showDialog(
+                context: context,
+                builder: (context) {
+                  if (resultMessage == "OK") {
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.of(context).pop(true); // Đóng dialog sau 2 giây
+                      setState(() {
+                        widget.product.productVariant.remove(productVariant);
+                      });
+                    });
+                  }
+                  return AlertDialog(
+                    title: const Text('Sản phẩm'),
+                    content: Text(resultMessage == "OK"
+                        ? "Xoá Sản phẩm thành công"
+                        : resultMessage),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Tiếp tục'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: const Text('Xóa'),
+          ),
+        ],
+      ),
+    );
   }
 }

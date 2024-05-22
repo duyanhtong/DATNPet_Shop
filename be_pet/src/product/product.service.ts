@@ -17,6 +17,11 @@ import {
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { ProductFilterType } from './interface/product.filter-type.interface';
 import { SORT_BY_PRODUCT } from './constants/product.sort-by.constant';
+import { ProductVariant } from 'src/product_variant/entites/product-variant.entity';
+import {
+  ErrorCodeProductVariant,
+  ErrorMessageProductvariant,
+} from 'src/product_variant/constants/error-code-product-variant.constant';
 
 @Injectable()
 export class ProductService {
@@ -156,7 +161,7 @@ export class ProductService {
     if (itemsPerPage > 50) {
       itemsPerPage = 50;
     }
-    console.log(filter);
+
     const page: number = filter.page || 1;
     const search: string = filter.search || '';
     const skip = page - 1 ? (page - 1) * itemsPerPage : 0;
@@ -165,6 +170,8 @@ export class ProductService {
     if (!SORT_BY_PRODUCT.includes(sort_by)) {
       sort_by = 'created_at';
     }
+
+    const is_best_seller = filter.is_best_seller || -1;
 
     const category_id: number = filter.category_id || -1;
 
@@ -187,6 +194,18 @@ export class ProductService {
         new Brackets((qb) => {
           if (category_id) {
             qb.andWhere('product.category_id = :category_id', { category_id });
+          }
+        }),
+      );
+    }
+
+    if (is_best_seller !== -1) {
+      query.andWhere(
+        new Brackets((qb) => {
+          if (is_best_seller) {
+            qb.andWhere('product.is_best_seller = :is_best_seller', {
+              is_best_seller,
+            });
           }
         }),
       );
@@ -235,7 +254,7 @@ export class ProductService {
         .select(['product.name AS product_name', 'product.sold']) // Select specific fields
         .orderBy('product.sold', 'DESC')
         .take(5)
-        .getRawMany(); // Use getRawMany for custom response shape
+        .getRawMany();
       return top5Products;
     } catch (error) {
       throw new HttpException(
@@ -243,6 +262,15 @@ export class ProductService {
         ErrorCodeProduct.ERROR_GET_TOP_SELLING,
       );
     }
+  }
+
+  async remove(id: number): Promise<any> {
+    const product = await this.checkProductId(id);
+    await this.productRepository.softDelete(id);
+    return {
+      product: product,
+      message: 'Xoá sản phẩm thành công',
+    };
   }
 
   async getOneProductOption(product: Product): Promise<any> {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop_app/components/custom_dialog.dart';
@@ -17,17 +18,25 @@ class ProfilePic extends StatefulWidget {
 class _ProfilePicState extends State<ProfilePic> {
   late Future<UserModel?> futureProfilePic;
   File? selectedImage;
+  bool _disposed = false;
+
   @override
   void initState() {
     super.initState();
     futureProfilePic = getProfilePic();
   }
 
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   Future<UserModel?> getProfilePic() async {
     try {
       var profile = await Api.getProfile();
 
-      if (profile != null) {
+      if (profile != null && !_disposed) {
         return profile;
       } else {
         return null;
@@ -37,14 +46,38 @@ class _ProfilePicState extends State<ProfilePic> {
     }
   }
 
-  Future<void> pickImage(ImageSource source) async {
+  void pickImage(ImageSource source) async {
     final picker = ImagePicker();
-    final result = await picker.pickImage(source: source);
-    if (result != null) {
-      setState(() {
-        selectedImage = File(result.path);
-      });
-      showPreviewDialog(context);
+    try {
+      final result = await picker.pickImage(source: source);
+      if (result != null && !_disposed) {
+        setState(() {
+          selectedImage = File(result.path);
+        });
+        showPreviewDialog(context);
+      }
+    } catch (e) {
+      // Handle camera access denied error
+      if (e is PlatformException && e.code == 'camera_access_denied') {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Truy cập bị từ chối'),
+              content: const Text('Vui lòng cấp quyền truy cập vào máy ảnh.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Handle other exceptions
+        print('Error: $e');
+      }
     }
   }
 
@@ -53,7 +86,7 @@ class _ProfilePicState extends State<ProfilePic> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Xác nhận ảnh đại diện'),
+          title: const Text('Xác nhận ảnh đại diện'),
           content: SizedBox(
             height: 200,
             child: selectedImage != null
@@ -63,7 +96,7 @@ class _ProfilePicState extends State<ProfilePic> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Hủy bỏ'),
+              child: const Text('Hủy bỏ'),
             ),
             TextButton(
               onPressed: () async {
@@ -71,10 +104,10 @@ class _ProfilePicState extends State<ProfilePic> {
 
                 final userId = await _getUserIdFromFuture();
 
-                if (userId != null) {
+                if (userId != null && !_disposed) {
                   String? uploadResult =
                       await Api.uploadImage(userId, selectedImage!);
-                  if (uploadResult == "OK") {
+                  if (uploadResult == "OK" && !_disposed) {
                     setState(() {
                       futureProfilePic = getProfilePic();
                     });
@@ -82,13 +115,13 @@ class _ProfilePicState extends State<ProfilePic> {
                     showCustomDialog(
                         context, "Cập nhật ảnh", "Cập nhật ảnh lỗi");
                   }
-                } else {
+                } else if (!_disposed) {
                   showCustomDialog(
                       context, "Cập nhật ảnh", "Bạn cần đăng nhập tài khoản!");
                   print('Error: User ID not available for upload');
                 }
               },
-              child: Text('Tải lên'),
+              child: const Text('Tải lên'),
             ),
           ],
         );
@@ -114,12 +147,10 @@ class _ProfilePicState extends State<ProfilePic> {
       builder: (context, snapshot) {
         Widget profileImage;
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Hiển thị một placeholder khi đang tải
           profileImage = const CircleAvatar(
             backgroundImage: AssetImage("assets/images/2.png"),
           );
         } else if (snapshot.hasError || snapshot.data == null) {
-          // Hiển thị hình ảnh mặc định nếu có lỗi hoặc không có dữ liệu
           profileImage = const CircleAvatar(
             backgroundImage: AssetImage("assets/images/2.png"),
           );
@@ -160,13 +191,13 @@ class _ProfilePicState extends State<ProfilePic> {
                           return Wrap(
                             children: [
                               ListTile(
-                                leading: Icon(Icons.camera_alt),
-                                title: Text('Chụp ảnh'),
+                                leading: const Icon(Icons.camera_alt),
+                                title: const Text('Chụp ảnh'),
                                 onTap: () => pickImage(ImageSource.camera),
                               ),
                               ListTile(
-                                leading: Icon(Icons.photo_library),
-                                title: Text('Chọn ảnh từ thư viện'),
+                                leading: const Icon(Icons.photo_library),
+                                title: const Text('Chọn ảnh từ thư viện'),
                                 onTap: () => pickImage(ImageSource.gallery),
                               ),
                             ],

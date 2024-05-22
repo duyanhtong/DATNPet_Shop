@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -17,6 +18,7 @@ import { CreateProductVariantDto } from './dtos/create-product-variant.dto';
 import CommonError from 'src/ultils/base/error-code.base';
 import { UpdateProductVariantDto } from './dtos/update-product-variant.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { ValidateDto } from 'src/ultils/decorators/pipe-validate.decorator';
 
 @Controller('product-variant')
 export class ProductVariantController extends BaseController {
@@ -79,6 +81,21 @@ export class ProductVariantController extends BaseController {
     try {
       const result =
         await this.productVariantService.getProductByProductvariantId(id);
+      if (result instanceof CommonError) {
+        throw result;
+      }
+      return this.data(result);
+    } catch (error) {
+      if (error instanceof CommonError) return error;
+      return this.fail(error);
+    }
+  }
+
+  @Delete(':id')
+  @Roles('admin')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    try {
+      const result = await this.productVariantService.remove(id);
       if (result instanceof CommonError) {
         throw result;
       }

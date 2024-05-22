@@ -17,7 +17,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final chatBotConfig = IkChatBotConfig(
-      //SMTP Rating to your mail Settings
       ratingIconYes: const Icon(Icons.star),
       ratingIconNo: const Icon(Icons.star_border),
       ratingIconColor: Colors.black,
@@ -26,14 +25,14 @@ class _ChatScreenState extends State<ChatScreen> {
       thankyouText: 'Cảm ơn vì đánh giá của bạn!',
       ratingText: 'Đánh giá trải nghiệm của bạn:',
       ratingTitle: 'Cảm ơn bạn đã sử dụng chức năng của chúng tôi!',
-      body: 'email',
+      body: 'Khách Hàng đã đánh giá cuộc trò chuyện',
       subject: 'Đánh giá',
-      recipient: 'recipient@example.com',
+      recipient: 'duyanhtongapplyit@gmail.com',
       isSecure: false,
-      senderName: 'Your Name',
-      smtpUsername: 'Your Email',
-      smtpPassword: 'your password',
-      smtpServer: 'stmp.gmail.com',
+      senderName: 'Khách Hàng',
+      smtpUsername: 'duyanhtongapplyit@gmail.com',
+      smtpPassword: 'dbot zlsl oojp nbrf',
+      smtpServer: 'smtp.gmail.com',
       smtpPort: 587,
       //Settings to your system Configurations
       sendIcon: const Icon(Icons.send, color: Colors.red),
@@ -49,8 +48,8 @@ class _ChatScreenState extends State<ChatScreen> {
       responses: responses,
       backgroundColor: Colors.white,
       backgroundImage:
-          'https://i.pinimg.com/736x/d2/bf/d3/d2bfd3ea45910c01255ae022181148c4.jpg',
-      backgroundAssetimage: "assets/images/bg.jpg",
+          'https://www.google.com/imgres?imgurl=https%3A%2F%2Fbillboardquangcao.com%2Fuploads%2Fproducts%2Fhinh-nen-trang-4k-1024x600.jpg&tbnid=9mhM4jC6unkxSM&vet=12ahUKEwjp7-OUjJGGAxVYWvUHHSmvDfYQMygAegQIARBP..i&imgrefurl=https%3A%2F%2Frdsic.edu.vn%2Fblog%2Ftoan%2Fnhung-diem-khac-nhau-giua-cac-mau-trang-hinh-nen-khi-thiet-ke-website-vi-cb.html&docid=xO-gRn3da3BzBM&w=1024&h=600&q=%E1%BA%A3nh%20n%E1%BB%81n%20tr%E1%BA%AFng%204k&ved=2ahUKEwjp7-OUjJGGAxVYWvUHHSmvDfYQMygAegQIARBP',
+      backgroundAssetimage: "assets/images/bgwhite.png",
       initialGreeting:
           "Xin chào \nChào mừng bạn đến với cửa hàng Mưa Pet\nCửa hàng rất hân hạnh được phục vụ bạn!",
 
@@ -75,19 +74,6 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           ),
         ),
-        // floatingActionButton: FloatingActionButton(onPressed: () {
-        //   if(_chatIsOpened =  false) {
-        //     setState(() {
-        //     _chatIsOpened = true;
-        //     });
-        //   }else {
-        //     setState(() {
-        //       _chatIsOpened = false;
-        //     });
-        //   }
-        //
-        // },
-        // child: Icon(Icons.chat),),
         body: _chatIsOpened
             ? const Center(
                 child: Text('Chào mừng đến với cửa hàng Mưa Pet'),

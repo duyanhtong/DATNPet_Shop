@@ -3,10 +3,12 @@ export enum ErrorCodeProductVariant {
   PRODUCT_CODE_EXISTS = 702,
   PRODUCT_VARIANT_NAME_EXISTS = 703,
   INVENTORY_NOT_ENOUGH = 704,
+  ERROR_REMOVE_PRODUCT_VARIANT = 705,
 }
 export const ErrorMessageProductvariant = {
   701: 'Phân loại sản phẩm không tồn tại',
   702: 'Code sản phẩm đã tồn tại',
   703: 'Tên phân loại của sản phẩm đã tồn tại',
   704: 'Số lượng tồn kho không đủ để thực hiện yêu cầu.',
+  705: 'Có lỗi xảy ra khi xoá phân loại sản phẩm.',
 };

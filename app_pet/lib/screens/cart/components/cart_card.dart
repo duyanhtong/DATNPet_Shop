@@ -1,5 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/models/product.model.dart';
 import 'package:shop_app/screens/details/details_screen.dart';
@@ -24,13 +25,14 @@ class CartCard extends StatefulWidget {
 class _CartCardState extends State<CartCard> {
   late int _quantity;
   bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
     _quantity = widget.cartItem.quantity;
   }
 
-  void _updateQuantity(bool isIncrement) async {
+  Future<void> _updateQuantity(bool isIncrement) async {
     setState(() {
       _isLoading = true;
     });
@@ -42,7 +44,7 @@ class _CartCardState extends State<CartCard> {
           _quantity--;
         }
       }
-      await Api.updateCart(widget.cartItem.id, _quantity); // 비동기 호출로 변경
+      await Api.updateCart(widget.cartItem.id, _quantity);
       widget.onUpdateQuantity(_quantity);
     } catch (error) {
       showCustomDialog(context, "Giỏ hàng", error.toString());
@@ -55,23 +57,36 @@ class _CartCardState extends State<CartCard> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? CircularProgressIndicator() : _buildCartCard(context);
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _buildCartCard(context);
   }
 
-  @override
   Widget _buildCartCard(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Row(
       children: [
         GestureDetector(
           onTap: () async {
-            ProductModel product = await Api.getProductByProductVariantId(
-                widget.cartItem.productVariantId);
-            Navigator.pushNamed(
-              context,
-              DetailsScreen.routeName,
-              arguments: ProductDetailsArguments(product: product),
-            );
+            setState(() {
+              _isLoading = true;
+            });
+            try {
+              ProductModel product = await Api.getProductByProductVariantId(
+                  widget.cartItem.productVariantId);
+              Navigator.pushNamed(
+                // ignore: use_build_context_synchronously
+                context,
+                DetailsScreen.routeName,
+                arguments: ProductDetailsArguments(product: product),
+              );
+            } catch (error) {
+              showCustomDialog(context, "Error", error.toString());
+            } finally {
+              setState(() {
+                _isLoading = false;
+              });
+            }
           },
           child: SizedBox(
             width: screenWidth * 0.15,
@@ -88,6 +103,10 @@ class _CartCardState extends State<CartCard> {
                   child: Image.network(
                     widget.cartItem.image,
                     fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return const Icon(Icons.error);
+                    },
                   ),
                 ),
               ),
@@ -131,18 +150,18 @@ class _CartCardState extends State<CartCard> {
                       ],
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   IconButton(
-                    icon: Icon(Icons.remove),
-                    onPressed: () => {_updateQuantity(false)},
+                    icon: const Icon(Icons.remove),
+                    onPressed: _isLoading ? null : () => _updateQuantity(false),
                   ),
                   Text(
                     "$_quantity",
-                    style: TextStyle(color: kPrimaryColor),
+                    style: const TextStyle(color: kPrimaryColor),
                   ),
                   IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () => _updateQuantity(true),
+                    icon: const Icon(Icons.add),
+                    onPressed: _isLoading ? null : () => _updateQuantity(true),
                   ),
                 ],
               ),

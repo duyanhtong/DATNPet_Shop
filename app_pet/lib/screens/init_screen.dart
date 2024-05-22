@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ikchatbot/ikchatbot.dart';
+
 import 'package:shop_app/constants.dart';
 import 'package:shop_app/screens/chat/chat.screen.dart';
-import 'package:shop_app/screens/chat/keyword_response.chat.dart';
 import 'package:shop_app/screens/favorite/favorite_screen.dart';
 import 'package:shop_app/screens/home/home_screen.dart';
 import 'package:shop_app/screens/profile/profile_screen.dart';

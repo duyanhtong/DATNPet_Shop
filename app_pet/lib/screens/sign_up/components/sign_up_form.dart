@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -50,7 +52,7 @@ class _SignUpFormState extends State<SignUpForm> {
             context, CompleteProfileScreen.routeName);
       } else {
         showCustomDialog(context, "Đăng ký", message);
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
       }
     }
   }

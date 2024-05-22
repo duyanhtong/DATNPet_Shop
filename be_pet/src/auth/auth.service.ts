@@ -95,7 +95,10 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
-    await this.feeShippingService.updateOrderStatusById(user.id);
+    if (user.role != 'admin') {
+      await this.feeShippingService.updateOrderStatusById(user.id);
+    }
+
     return await this.generateToken(payload);
   }
 

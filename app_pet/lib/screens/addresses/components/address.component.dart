@@ -10,7 +10,8 @@ class AddressSelectionWidget extends StatefulWidget {
   final String? initialDistrict;
   final String? initialWard;
 
-  AddressSelectionWidget({
+  const AddressSelectionWidget({
+    super.key,
     required this.onSelectionChanged,
     this.initialProvince,
     this.initialDistrict,
@@ -94,14 +95,14 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
           readOnly: true,
           controller:
               TextEditingController(text: selectedProvince?.fullName ?? ''),
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: "Tỉnh/ Thành phố",
             hintText: "Chọn tỉnh/ thành phố",
             floatingLabelBehavior: FloatingLabelBehavior.always,
             suffixIcon: Icon(Icons.arrow_drop_down),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         TextFormField(
           onTap: () {
             _showDistrictDialog();
@@ -109,21 +110,21 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
           readOnly: true,
           controller:
               TextEditingController(text: selectedDistrict?.fullName ?? ''),
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: "Quận/ Huyện",
             hintText: "Chọn quận/ huyện",
             floatingLabelBehavior: FloatingLabelBehavior.always,
             suffixIcon: Icon(Icons.arrow_drop_down),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         TextFormField(
           onTap: () {
             _showWardDialog();
           },
           readOnly: true,
           controller: TextEditingController(text: selectedWard?.fullName ?? ''),
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: "Xã/ Phường",
             hintText: "Chọn xã/ phường",
             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -139,8 +140,8 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Chọn Tỉnh/ Thành phố"),
-          content: Container(
+          title: const Text("Chọn Tỉnh/ Thành phố"),
+          content: SizedBox(
             width: double.minPositive,
             child: ListView.builder(
               shrinkWrap: true,
@@ -162,6 +163,7 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
                       'district': '',
                       'ward': '',
                     });
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   },
                 );
@@ -178,8 +180,8 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Chọn Quận/ Huyện"),
-          content: Container(
+          title: const Text("Chọn Quận/ Huyện"),
+          content: SizedBox(
             width: double.minPositive,
             child: ListView.builder(
               shrinkWrap: true,
@@ -199,6 +201,7 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
                       'district': selectedDistrict!.name,
                       'ward': '',
                     });
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   },
                 );
@@ -215,8 +218,8 @@ class _AddressSelectionWidgetState extends State<AddressSelectionWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Chọn Xã/ Phường"),
-          content: Container(
+          title: const Text("Chọn Xã/ Phường"),
+          content: SizedBox(
             width: double.minPositive,
             child: ListView.builder(
               shrinkWrap: true,

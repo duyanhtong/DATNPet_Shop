@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:shop_app/screens/products/products_screen.dart';
@@ -45,7 +44,7 @@ class SearchField extends StatelessWidget {
                   ProductsScreen.routeName,
                   arguments: {
                     'searchQuery': searchController.text,
-                    'categoryId': null,
+                    'categoryId': null, // Giả sử categoryId là null
                   },
                 );
                 // Xoá text sau khi thực hiện tìm kiếm

@@ -1,11 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shop_app/components/icon_text_padding.dart';
 import 'package:shop_app/constants.dart';
 import 'package:shop_app/models/Address.model.dart';
-import 'package:shop_app/screens/addresses/components/address_card.dart';
+
 import 'package:shop_app/screens/addresses/list-address.screen.dart';
-import 'package:shop_app/screens/cart/components/cart_card.dart';
-import 'package:shop_app/screens/cart/components/check_out_card.dart';
+
 import 'package:shop_app/screens/preview_order/components/address_default.component.dart';
 import 'package:shop_app/screens/preview_order/components/cart_order.componenr.dart';
 import 'package:shop_app/screens/preview_order/components/check-out-order.component.dart';
@@ -30,13 +31,13 @@ class _OrderPreviewScreenState extends State<OrderPreviewScreen> {
 
   String? _selectedPaymentMethod;
   final List<DropdownMenuItem<String>> _paymentMethods = [
-    DropdownMenuItem(
+    const DropdownMenuItem(
       value: 'COD',
       child: Text('COD'),
     ),
-    DropdownMenuItem(
+    const DropdownMenuItem(
       value: 'ONLINE',
-      child: Text('ONLINE'),
+      child: Text('PAYPAL'),
     ),
   ];
 
@@ -51,13 +52,15 @@ class _OrderPreviewScreenState extends State<OrderPreviewScreen> {
   Future<void> _getDefaultAddress() async {
     try {
       AddressModel? address = await Api.getDefaultAddress();
-      setState(() {
-        defaultAddress = address;
-      });
+      if (mounted) {
+        setState(() {
+          defaultAddress = address;
+        });
+      }
     } catch (error) {
       debugPrint('Failed to load default address: $error');
     } finally {
-      if (defaultAddress == null) {
+      if (defaultAddress == null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -80,19 +83,23 @@ class _OrderPreviewScreenState extends State<OrderPreviewScreen> {
           addressId: defaultAddress!.id,
           cartIds: cartIds,
         );
-        setState(() {
-          feeShipping = feeShippingApi;
-        });
+        if (mounted) {
+          setState(() {
+            feeShipping = feeShippingApi;
+          });
+        }
       } catch (error) {
         debugPrint('Failed to load fee shipping: $error');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Lỗi tính toán phí vận chuyển. Vui lòng thử lại.',
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Lỗi tính toán phí vận chuyển. Vui lòng thử lại.',
+              ),
+              backgroundColor: kPrimaryColor,
             ),
-            backgroundColor: kPrimaryColor,
-          ),
-        );
+          );
+        }
       }
     }
   }
@@ -100,8 +107,12 @@ class _OrderPreviewScreenState extends State<OrderPreviewScreen> {
   void _onAddressSelected() async {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ListAddressScreen()),
-    ).then((_) => _getDefaultAddress());
+      MaterialPageRoute(builder: (context) => const ListAddressScreen()),
+    ).then((_) {
+      if (mounted) {
+        _getDefaultAddress();
+      }
+    });
   }
 
   @override
@@ -162,10 +173,11 @@ class _OrderPreviewScreenState extends State<OrderPreviewScreen> {
                     elevation: 16,
                     style: const TextStyle(color: kPrimaryColor),
                     onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedPaymentMethod = newValue;
-                        print(_selectedPaymentMethod);
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _selectedPaymentMethod = newValue;
+                        });
+                      }
                     },
                     items: _paymentMethods,
                   ),
@@ -218,7 +230,7 @@ class _OrderPreviewScreenState extends State<OrderPreviewScreen> {
               addressId: defaultAddress!.id,
               payment_method: _selectedPaymentMethod!,
             )
-          : SizedBox(),
+          : const SizedBox(),
     );
   }
 

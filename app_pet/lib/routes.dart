@@ -3,7 +3,6 @@ import 'package:shop_app/screens/admin-dashboard/dashboard_screen.dart';
 import 'package:shop_app/screens/admin_order/admin_order.screen.dart';
 import 'package:shop_app/screens/checkout/paypal.screen.dart';
 import 'package:shop_app/screens/order/order.screen.dart';
-import 'package:shop_app/screens/order_detail/order_detail.screen.dart';
 import 'package:shop_app/screens/preview_order/order_preview.screen.dart';
 import 'package:shop_app/screens/product_admin/components/add_product.screen.dart';
 import 'package:shop_app/screens/product_admin/product_admin.screen.dart';
@@ -44,6 +43,6 @@ final Map<String, WidgetBuilder> routes = {
   OrdersScreen.routeName: (context) => OrdersScreen(),
   AdminOrdersScreen.routeName: (context) => AdminOrdersScreen(),
   ProductManagementScreen.routeName: (context) => ProductManagementScreen(),
-  OrderPreviewScreen.routeName: (context) => OrderPreviewScreen(),
-  AddProductScreen.routeName: (context) => AddProductScreen(),
+  OrderPreviewScreen.routeName: (context) => const OrderPreviewScreen(),
+  AddProductScreen.routeName: (context) => const AddProductScreen(),
 };

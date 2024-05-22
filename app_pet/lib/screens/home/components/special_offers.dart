@@ -92,10 +92,12 @@ class _SpecialOfferCardState extends State<SpecialOfferCard> {
 
     int count = await Api.getCountProduct(widget.search);
 
-    setState(() {
-      numOfBrands = count;
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        numOfBrands = count;
+        isLoading = false;
+      });
+    }
   }
 
   @override

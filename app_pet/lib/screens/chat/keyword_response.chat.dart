@@ -1,3 +1,51 @@
-final List<String> keywords = ["hello"];
+final List<String> keywords = [
+  "giá chó",
+  "giá mèo",
+  "thức ăn cho chó",
+  "thức ăn cho mèo",
+  "phụ kiện cho chó",
+  "phụ kiện cho mèo",
+  "dịch vụ tắm cho chó",
+  "dịch vụ tắm cho mèo",
+  "cắt tỉa lông chó",
+  "cắt tỉa lông mèo",
+  "trị bệnh cho chó",
+  "trị bệnh cho mèo",
+  "pet hotel",
+  "vật dụng huấn luyện chó",
+  "vật dụng huấn luyện mèo",
+  "thuốc xổ giun cho chó",
+  "thuốc xổ giun cho mèo",
+  "sữa cho chó con",
+  "sữa cho mèo con",
+  "lọai chó dễ nuôi",
+  "lọai mèo dễ nuôi",
+  "chó cảnh",
+  "mèo cảnh"
+];
 
-final List<String> responses = ["duy anh  nè"];
+final List<String> responses = [
+  "Tùy vào giống chó, giá dao động từ 1 triệu đến 5 triệu. Bạn có thể liên hệ với chúng tôi hoặc đến cửa hàng để được tư vấn cụ thể.",
+  "Tương tự như chó, giá mèo cũng phụ thuộc vào giống mèo và độ tuổi. Mèo phổ biến như mèo Anh, mèo Ba Tư thường có giá từ 1 triệu đến 11 triệu.",
+  "Cửa hàng chúng tôi có đa dạng thức ăn cho chó từ các thương hiệu uy tín như CatOn, CatEye, CatRang, phù hợp với mọi độ tuổi và nhu cầu dinh dưỡng của chó.",
+  "Tương tự như thức ăn cho chó, chúng tôi cũng có nhiều loại thức ăn cho mèo đáp ứng nhu cầu dinh dưỡng khác nhau của mèo, từ mèo con, mèo trưởng thành đến mèo già.",
+  "Cửa hàng cung cấp đầy đủ phụ kiện cho chó như dây xích, vòng cổ, ổ nệm, đồ chơi, v.v. giúp bạn chăm sóc chó tốt nhất.",
+  "Tương tự như phụ kiện cho chó, chúng tôi cũng có nhiều loại phụ kiện cho mèo như cát vệ sinh, khay vệ sinh, cột cào, đồ chơi, v.v.",
+  "Cửa hàng cung cấp dịch vụ tắm cho chó với đội ngũ nhân viên chuyên nghiệp, sử dụng các sản phẩm tắm rửa an toàn cho da và lông chó.",
+  "Tương tự như dịch vụ tắm cho chó, chúng tôi cũng có dịch vụ tắm cho mèo với quy trình tắm rửa chuyên biệt, giúp mèo sạch sẽ và thơm tho.",
+  "Cửa hàng có thợ cắt tỉa lông chó tay nghề cao, tạo kiểu lông đẹp và phù hợp với giống chó.",
+  "Tương tự như cắt tỉa lông chó, chúng tôi cũng có dịch vụ cắt tỉa lông mèo với nhiều kiểu dáng đa dạng, giúp mèo trông dễ thương và gọn gàng hơn.",
+  "Cửa hàng có bác sĩ thú y trực tiếp khám và điều trị các bệnh lý thông thường cho chó.",
+  "Tương tự như trị bệnh cho chó, chúng tôi cũng có dịch vụ trị bệnh cho mèo với bác sĩ thú y chuyên nghiệp, giàu kinh nghiệm.",
+  "Cửa hàng có dịch vụ pet hotel, trông giữ thú cưng của bạn khi bạn đi xa hoặc bận công việc.",
+  "Cửa hàng cung cấp các vật dụng huấn luyện chó như vòng cổ huấn luyện, dây xích huấn luyện, đồ chơi huấn luyện, v.v. giúp bạn huấn luyện chó dễ dàng hơn.",
+  "Tương tự như vật dụng huấn luyện chó, chúng tôi cũng có nhiều loại vật dụng huấn luyện mèo như clicker, cần câu mèo, đồ chơi huấn luyện, v.v.",
+  "Cửa hàng có nhiều loại thuốc xổ giun cho chó từ các thương hiệu uy tín, giúp bảo vệ chó khỏi các loại giun sán gây hại.",
+  "Tương tự như thuốc xổ giun cho chó, chúng tôi cũng có nhiều loại thuốc xổ giun cho mèo hiệu quả và an toàn cho sức khỏe mèo.",
+  "Cửa hàng có nhiều loại sữa cho chó con từ các thương hiệu uy tín, cung cấp đầy đủ dưỡng chất thiết yếu cho sự phát triển của chó con.",
+  "Tương tự như sữa cho chó con, chúng tôi cũng có nhiều loại sữa cho mèo con với công thức dinh dưỡng phù hợp cho từng độ tuổi và nhu cầu của mèo con.",
+  "Một số giống chó dễ nuôi phổ biến như Golden Retriever, Labrador Retriever, Poodle, Bulldog Pháp, v.v.",
+  "Một số giống mèo dễ nuôi phổ biến như mèo Anh lông ngắn, mèo Ba Tư, mèo Munchkin, mèo Scottish Fold, v.v.",
+  "Cửa hàng có nhiều giống chó cảnh đẹp và quý hiếm như Chihuahua, Pomeranian, Poodle, Bulldog Anh, v.v.",
+  "Tương tự như chó cảnh, chúng tôi cũng có nhiều giống mèo cảnh độc đáo và dễ thương như mèo Bengal, mèo Sphynx, mèo Ragdoll, mèo Maine Coon, v.v."
+];

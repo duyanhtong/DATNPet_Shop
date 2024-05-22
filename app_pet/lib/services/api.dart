@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:shop_app/models/Address.model.dart';
 import 'package:shop_app/models/CartItem.model.dart';
+import 'package:shop_app/models/Revenue.model.dart';
 import 'package:shop_app/models/TopProductSell.model.dart';
 import 'package:shop_app/models/district.model.dart';
 import 'package:shop_app/models/feedback.model.dart';
@@ -17,8 +18,9 @@ import 'package:shop_app/models/ward.model.dart';
 import 'package:shop_app/models/wish_list.model.dart';
 
 class Api {
-  static const baseUrl = "http://192.168.1.153:4000/";
+  //static const baseUrl = "http://192.168.1.153:4000/";
   //static const baseUrl = "http://192.168.0.101:4000/";
+  static const baseUrl = "http://192.168.88.232:4000/";
   static String? accessToken;
   static String? refreshToken;
 
@@ -174,11 +176,11 @@ class Api {
     }
   }
 
-  static Future<List<ProductModel>> getAllProduct({
-    String? searchQuery,
-    int? categoryId,
-    int? page,
-  }) async {
+  static Future<List<ProductModel>> getAllProduct(
+      {String? searchQuery,
+      int? categoryId,
+      int? page,
+      int? is_best_seller}) async {
     final queryParams = <String, String>{};
 
     if (searchQuery != null) {
@@ -191,6 +193,9 @@ class Api {
 
     if (page != null) {
       queryParams['page'] = page.toString();
+    }
+    if (is_best_seller != null) {
+      queryParams['is_best_seller'] = is_best_seller.toString();
     }
 
     final uri = Uri.parse(
@@ -304,7 +309,7 @@ class Api {
 
     try {
       var request = http.MultipartRequest('PUT', url)
-        ..fields['productName'] = productName ?? ''
+        ..fields['name'] = productName ?? ''
         ..fields['description'] = description ?? ''
         ..fields['ingredient'] = ingredient ?? ''
         ..fields['origin'] = origin ?? ''
@@ -397,6 +402,51 @@ class Api {
       }
     } catch (error) {
       print(error.toString());
+      return "Có lỗi xảy ra trong quá trình thực hiện";
+    }
+  }
+
+  static Future<String> removeProduct(int productId) async {
+    var url = Uri.parse("${baseUrl}product/$productId");
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        },
+      );
+      var responseData = jsonDecode(response.body.toString());
+      if (responseData["success"] == 1) {
+        return "OK";
+      } else {
+        return responseData["data"]["message"] ?? "Có lỗi xảy ra";
+      }
+    } catch (error) {
+      debugPrint(error.toString());
+      return "Có lỗi xảy ra trong quá trình thực hiện";
+    }
+  }
+
+  static Future<String> removeProductVariant(int productVariantId) async {
+    var url = Uri.parse("${baseUrl}product-variant/$productVariantId");
+    print("run api delete product variant $url");
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        },
+      );
+      var responseData = jsonDecode(response.body.toString());
+      if (responseData["success"] == 1) {
+        return "OK";
+      } else {
+        return responseData["data"]["message"] ?? "Có lỗi xảy ra";
+      }
+    } catch (error) {
+      debugPrint(error.toString());
       return "Có lỗi xảy ra trong quá trình thực hiện";
     }
   }
@@ -654,6 +704,7 @@ class Api {
 
   static Future<bool> checkProductToWishList(int productId) async {
     var url = Uri.parse("${baseUrl}wish-list/check");
+    print("run api check wishlist $url");
     try {
       final response = await http.post(
         url,
@@ -666,7 +717,7 @@ class Api {
         }),
       );
       var responseData = jsonDecode(response.body.toString());
-      if (responseData != null) {
+      if (responseData["data"] != null) {
         return true;
       } else {
         return false;
@@ -870,6 +921,7 @@ class Api {
 
   static Future<String> uploadImage(int userId, File file) async {
     var url = Uri.parse("${baseUrl}user/upload/$userId");
+    print("run api update image user $url");
     try {
       var request = http.MultipartRequest('PUT', url)
         ..headers['Authorization'] = 'Bearer $accessToken'
@@ -1457,6 +1509,56 @@ class Api {
       }
     } catch (error) {
       print(error.toString());
+      return [];
+    }
+  }
+
+  static Future<int> getRevenue(
+      {required String startDate, required String endDate}) async {
+    var url = Uri.parse("${baseUrl}revenue/$startDate/$endDate");
+    print("run api revenue $url");
+    try {
+      final res = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+      var responseData = jsonDecode((res.body.toString()));
+      if (responseData["success"] == 1) {
+        return responseData["data"]["totalRevenue"];
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      debugPrint(error.toString());
+      return 0;
+    }
+  }
+
+  static Future<List<Revenue>> getListRevenue() async {
+    final url = Uri.parse('${baseUrl}revenue/six-month');
+    print("API get revenue six month: $url");
+
+    try {
+      final res = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
+      var responseData = json.decode(res.body.toString());
+
+      if (responseData["success"] == 1) {
+        List<dynamic> revenueData = responseData["data"];
+        List<Revenue> revenues =
+            revenueData.map((dynamic item) => Revenue.fromJson(item)).toList();
+        print('Revenues: $revenues');
+        return revenues;
+      } else {
+        throw Exception(responseData["message"]);
+      }
+    } catch (error) {
+      print('Error: $error');
       return [];
     }
   }

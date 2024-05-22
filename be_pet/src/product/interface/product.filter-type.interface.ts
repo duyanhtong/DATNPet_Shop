@@ -5,4 +5,5 @@ export interface ProductFilterType {
   search?: string;
   sort_by?: string;
   order_by?: string;
+  is_best_seller?: 0 | 1;
 }

@@ -10,6 +10,7 @@ export class CreateTableOrder1712286684867 implements MigrationInterface {
         "order_code" VARCHAR(100),
         "status" VARCHAR NOT NULL,
         "payment_method" VARCHAR NOT NULL DEFAULT 'COD',
+       
         "total_money" FLOAT NOT NULL,
         "fee_shipping" FLOAT NOT NULL,
         "province" VARCHAR(100) NOT NULL,

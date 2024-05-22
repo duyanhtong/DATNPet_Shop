@@ -8,6 +8,7 @@ import '../../../constants.dart';
 import '../../../helper/keyboard.dart';
 import '../../forgot_password/forgot_password_screen.dart';
 import '../../login_success/login_success_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignForm extends StatefulWidget {
   const SignForm({super.key});
@@ -130,24 +131,25 @@ class _SignFormState extends State<SignForm> {
           FormError(errors: errors),
           const SizedBox(height: 16),
           isLoading
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {
-                        isLoading = true; // Bắt đầu hiển thị loading indicator
+                        isLoading = true;
                       });
 
                       _formKey.currentState!.save();
                       KeyboardUtil.hideKeyboard(context);
                       var data = {"email": email, "password": password};
                       var result = await Api.login(data);
+                      print(result);
                       if (result['boolean'] == true) {
                         Navigator.pushNamed(
                             context, LoginSuccessScreen.routeName);
                       } else {
                         showCustomDialog(
-                            context, "Lỗi đăng nhập", result["message"]);
+                            context, "Lỗi đăng nhập", "Vui lòng thử lại sau");
                       }
                       setState(() {
                         isLoading = false; // Ẩn loading indicator
@@ -160,4 +162,24 @@ class _SignFormState extends State<SignForm> {
       ),
     );
   }
+}
+
+Future<void> saveLoginDetails(
+    String email, String password, bool remember) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('email', email);
+  await prefs.setString('password', remember ? password : '');
+  await prefs.setBool('remember', remember);
+}
+
+Future<Map<String, dynamic>> getLoginDetails() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String email = prefs.getString('email') ?? '';
+  String password = prefs.getString('password') ?? '';
+  bool remember = prefs.getBool('remember') ?? false;
+  return {
+    'email': email,
+    'password': password,
+    'remember': remember,
+  };
 }

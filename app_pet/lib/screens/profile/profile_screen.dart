@@ -45,11 +45,11 @@ class ProfileScreen extends StatelessWidget {
                 )
               },
             ),
-            ProfileMenu(
-              text: "Thông báo",
-              icon: "assets/icons/Bell.svg",
-              press: () {},
-            ),
+            // ProfileMenu(
+            //   text: "Thông báo",
+            //   icon: "assets/icons/Bell.svg",
+            //   press: () {},
+            // ),
             ProfileMenu(
               text: "Đơn hàng",
               icon: "assets/icons/Cart Icon.svg",

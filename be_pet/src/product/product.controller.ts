@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -117,11 +118,28 @@ export class ProductController extends BaseController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
     @UploadedFile()
-    productImage: Express.Multer.File,
+    productImage?: Express.Multer.File,
   ): Promise<any> {
     try {
-      console.log(productImage);
-      const result = await this.productService.update(id, body);
+      console.log('run api update product');
+      console.log(body);
+      const result = await this.productService.update(id, body, productImage);
+      if (result instanceof CommonError) {
+        throw result;
+      }
+      console.log(result);
+      return this.data(result);
+    } catch (error) {
+      if (error instanceof CommonError) return error;
+      return this.fail(error);
+    }
+  }
+
+  @Delete(':id')
+  @Roles('admin')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    try {
+      const result = await this.productService.remove(id);
       if (result instanceof CommonError) {
         throw result;
       }

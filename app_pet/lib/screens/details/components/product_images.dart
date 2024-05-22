@@ -78,8 +78,13 @@ class _ProductImagesState extends State<ProductImages> {
                         color: kPrimaryColor
                             .withOpacity(index == selectedImageIndex ? 1 : 0)),
                   ),
-                  child: Image.network(imagePaths[
-                      index]), // Sử dụng Image.network để tải hình ảnh từ URL
+                  child: Image.network(
+                    imagePaths[index],
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return const Icon(Icons.error);
+                    },
+                  ), // Sử dụng Image.network để tải hình ảnh từ URL
                 ),
               ),
             ),

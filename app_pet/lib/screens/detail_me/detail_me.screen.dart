@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/constants.dart';
@@ -60,7 +62,7 @@ class _DetailMeScreenState extends State<DetailMeScreen> {
             TextButton(
               child: const Text('Lưu'),
               onPressed: () async {
-                print('Giá trị mới: ${controller.text}');
+                
                 String? result;
                 if (title == 'Địa Chỉ') {
                   result = await Api.updateAddressMe(

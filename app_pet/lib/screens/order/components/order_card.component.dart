@@ -1,12 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/constants.dart';
-import 'package:shop_app/models/feedback.model.dart';
 import 'package:shop_app/models/order.model.dart';
 import 'package:shop_app/screens/ProductReview/product_review.screen.dart';
-import 'package:shop_app/screens/admin_order/admin_order.screen.dart';
-import 'package:shop_app/screens/order/order.screen.dart';
 import 'package:shop_app/screens/order_detail/order_detail.screen.dart';
 import 'package:shop_app/services/api.dart';
 
@@ -43,7 +41,7 @@ class _OrderCardState extends State<OrderCard> {
           MaterialPageRoute(
             builder: (context) => OrderDetailScreen(orderId: widget.order.id),
           ),
-        );
+        ).then((_) => widget.onOrderConfirmed?.call());
       },
       child: Card(
         child: Column(
@@ -80,7 +78,15 @@ class _OrderCardState extends State<OrderCard> {
                       ),
                     ],
                   ),
-                  leading: Image.network(cartItem.image, width: 50, height: 50),
+                  leading: Image.network(
+                    cartItem.image,
+                    width: 50,
+                    height: 50,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return const Icon(Icons.error);
+                    },
+                  ),
                 );
               },
             ),
@@ -140,7 +146,6 @@ class _OrderCardState extends State<OrderCard> {
                     ),
                   ),
                   const SizedBox(width: 2),
-                  // Display text 'Đã đánh giá' in green color with icon
                   const Row(
                     children: [
                       Icon(Icons.check, color: Colors.green),
@@ -204,7 +209,7 @@ class _OrderCardState extends State<OrderCard> {
                         MaterialPageRoute(
                             builder: (context) =>
                                 ProductReviewScreen(order: widget.order)),
-                      );
+                      ).then((_) => widget.onOrderConfirmed?.call());
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 0.5),
@@ -218,7 +223,6 @@ class _OrderCardState extends State<OrderCard> {
         ],
       );
     } else {
-      // Trả về một widget hiển thị tổng tiền mà không hiển thị nút "Đánh giá"
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -243,16 +247,15 @@ class _OrderCardState extends State<OrderCard> {
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end, // Đổi thành end
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Expanded(
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(right: 10.0), // Đổi thành right
+                    padding: const EdgeInsets.only(right: 10.0),
                     child: Text(
                       'Tổng cộng($cartItemCount Sản phẩm): đ ${calculateTotalPrice() + widget.order.feeShipping}',
                       style: const TextStyle(fontSize: 14),
-                      textAlign: TextAlign.right, // Căn chỉnh văn bản sang phải
+                      textAlign: TextAlign.right,
                     ),
                   ),
                 ),
@@ -301,28 +304,24 @@ class _OrderCardState extends State<OrderCard> {
                 ),
               ),
               const SizedBox(width: 2),
-              // Chỉ hiển thị nút nếu isAdmin == true và nameTab là "Chờ xác nhận" hoặc "Chờ giao hàng"
               if (isAdmin &&
                   (nameTab == OrderStatusEnum.PendingConfirmation ||
                       nameTab == OrderStatusEnum.WaitingForDelivery))
                 IntrinsicWidth(
                   child: ElevatedButton(
                     onPressed: () async {
-                      print(nameTab == OrderStatusEnum.WaitingForDelivery
-                          ? 'Hoàn thành đơn hàng'
-                          : 'Xác nhận đơn hàng');
                       showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (context) =>
                             const Center(child: CircularProgressIndicator()),
                       );
+
                       String result;
                       if (nameTab == OrderStatusEnum.WaitingForDelivery) {
                         result = await Api.updateStatusOrder(
                             orderId: widget.order.id,
-                            status: OrderStatusEnum
-                                .Delivered); // Assuming Api.completeOrder exists
+                            status: OrderStatusEnum.Delivered);
                       } else {
                         result = await Api.updateStatusOrder(
                             orderId: widget.order.id,
@@ -331,13 +330,23 @@ class _OrderCardState extends State<OrderCard> {
                       Navigator.pop(context);
 
                       if (result == "OK") {
-                        showCustomDialog(
-                          context,
-                          "Đơn hàng",
-                          nameTab == "Chờ giao hàng"
-                              ? "Đơn hàng đã hoàn thành thành công"
-                              : "Đơn hàng đã được xác nhận thành công",
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Đơn hàng"),
+                              content: Text(
+                                nameTab == OrderStatusEnum.WaitingForDelivery
+                                    ? "Đơn hàng đã hoàn thành thành công"
+                                    : "Đơn hàng đã được xác nhận thành công",
+                              ),
+                            );
+                          },
                         );
+
+                        await Future.delayed(const Duration(seconds: 2));
+                        Navigator.pop(context);
                         widget.onOrderConfirmed?.call();
                       } else {
                         showCustomDialog(context, "Đơn hàng", result);

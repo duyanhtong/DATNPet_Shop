@@ -43,15 +43,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
         final searchQueryArg = args['searchQuery'] as String?;
         final categoryIdArg = args['categoryId'] as int?;
         if (_searchQuery != searchQueryArg || _categoryId != categoryIdArg) {
-          setState(() {
-            _searchQuery = searchQueryArg;
-            _categoryId = categoryIdArg;
-            products.clear();
-            currentPage = 1;
-          });
-
+          _searchQuery = searchQueryArg;
+          _categoryId = categoryIdArg;
+          products.clear();
+          currentPage = 1;
           fetchProducts();
         }
+      } else if (_searchQuery != widget.searchQuery ||
+          _categoryId != widget.categoryId) {
+        _searchQuery = widget.searchQuery;
+        _categoryId = widget.categoryId;
+        products.clear();
+        currentPage = 1;
+        fetchProducts();
       }
     }
     if (_searchQuery == null && _categoryId == null) {
@@ -71,11 +75,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
         page: currentPage,
       );
 
-      setState(() {
-        products.addAll(newProducts);
-        currentPage++;
-        isFetching = false;
-      });
+      if (mounted) {
+        setState(() {
+          products.addAll(newProducts);
+          currentPage++;
+          isFetching = false;
+        });
+      }
     }
   }
 
@@ -102,6 +108,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
           style: TextStyle(color: kPrimaryColor, fontSize: 16.0),
         ),
         centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),

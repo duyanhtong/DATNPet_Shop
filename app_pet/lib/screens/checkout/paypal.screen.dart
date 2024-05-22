@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/constants.dart';
@@ -125,7 +127,7 @@ class _CheckoutPayPalPageState extends State<CheckoutPayPalPage> {
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: 200,
               child: ElevatedButton(
                 onPressed: () async {
@@ -176,15 +178,13 @@ class _CheckoutPayPalPageState extends State<CheckoutPayPalPage> {
                           setState(() {
                             flag = 0;
                           });
-                          print("Lỗi nè 00000000000000000000000000");
-                          print("onError: $error");
-                          print("Lỗi nè 00000000000000000000000000");
+                         
                           Navigator.pop(context);
                         },
                         onCancel: () {
-                          print("Huỷ nè 00000000000000000000000000");
+                        
                           print('cancelled:');
-                          print("Huỷ nè 00000000000000000000000000");
+                         
                         },
                       ),
                     ),
@@ -202,11 +202,12 @@ class _CheckoutPayPalPageState extends State<CheckoutPayPalPage> {
                     );
                     if (result == "OK") {
                       showCustomDialog(
+                        // ignore: use_build_context_synchronously
                         context,
                         "Đặt hàng",
                         "Đơn hàng đã được đặt thành công",
                       );
-                      await Future.delayed(Duration(seconds: 3));
+                      await Future.delayed(const Duration(seconds: 3));
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         InitScreen.routeName,
@@ -214,7 +215,7 @@ class _CheckoutPayPalPageState extends State<CheckoutPayPalPage> {
                       );
                     } else {
                       showCustomDialog(context, "Đặt hàng", result);
-                      await Future.delayed(Duration(seconds: 3));
+                      await Future.delayed(const Duration(seconds: 3));
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         OrderPreviewScreen.routeName,
@@ -233,11 +234,11 @@ class _CheckoutPayPalPageState extends State<CheckoutPayPalPage> {
                       CartScreen.routeName,
                       (route) => false,
                     );
-                    await Future.delayed(Duration(seconds: 3));
+                    await Future.delayed(const Duration(seconds: 3));
                   }
                 },
                 child: isLoading
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : const Text('Tiếp tục thanh toán'),
               ),
             ),

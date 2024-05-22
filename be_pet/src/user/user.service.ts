@@ -31,6 +31,7 @@ export class UserService {
     const path = await this.imageService.upload(userImage);
     user.image = path;
     await this.userRepository.save(user);
+    
     return await this.getOneUserOption(user);
   }
 

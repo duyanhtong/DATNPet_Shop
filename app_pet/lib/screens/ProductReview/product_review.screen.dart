@@ -90,7 +90,6 @@ class _ProductReviewScreenState extends State<ProductReviewScreen> {
     bool isAllFeedbacksUpdatedSuccessfully = true;
 
     try {
-      // Sử dụng Future.wait để chờ tất cả các yêu cầu hoàn thành
       await Future.wait(_feedbackList.map((feedback) async {
         int feedbackId = feedback.id;
         var rating = _ratings[feedbackId] ?? 0;
@@ -163,7 +162,14 @@ class _ProductReviewScreenState extends State<ProductReviewScreen> {
                           promotion: 0,
                           quantity: 0),
                     );
-
+                    if (cartItem.id == 0) {
+                      return const ListTile(
+                        title: Text(
+                          'Không tìm thấy sản phẩm',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      );
+                    }
                     return Column(
                       children: [
                         ListTile(
@@ -171,8 +177,15 @@ class _ProductReviewScreenState extends State<ProductReviewScreen> {
                             '${cartItem.productName} (${cartItem.productVariantName})',
                             style: const TextStyle(fontSize: 14),
                           ),
-                          leading: Image.network(cartItem.image,
-                              width: 50, height: 50),
+                          leading: Image.network(
+                            cartItem.image,
+                            width: 50,
+                            height: 50,
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace? stackTrace) {
+                              return const Icon(Icons.error);
+                            },
+                          ),
                         ),
                         StarRatingWidget(
                           onRatingSelected: (rating) {
@@ -210,14 +223,6 @@ class _ProductReviewScreenState extends State<ProductReviewScreen> {
                     );
                   }).toList(),
                   const SizedBox(height: 20),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     _feedbackList.forEach((feedback) {
-                  //       _submitReview(feedback.id);
-                  //     });
-                  //   },
-                  //   child: const Text('Gửi Tất Cả Đánh Giá'),
-                  // ),
                 ],
               ),
             ),

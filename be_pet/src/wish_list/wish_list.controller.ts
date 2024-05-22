@@ -47,6 +47,7 @@ export class WishListController extends BaseController {
         req.user.id,
         data.product_id,
       );
+      
       if (result instanceof CommonError) {
         throw result;
       }

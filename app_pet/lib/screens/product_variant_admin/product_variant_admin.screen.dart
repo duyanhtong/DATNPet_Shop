@@ -134,6 +134,12 @@ class _ProductVariantDetailsAdminScreenState
             fontSize: 16.0,
           ),
         ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -150,6 +156,10 @@ class _ProductVariantDetailsAdminScreenState
                   : Image.network(
                       widget.productVariant.imagePath,
                       fit: BoxFit.cover,
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace? stackTrace) {
+                        return const Icon(Icons.error);
+                      },
                     ),
             ),
             // hiển thị icon chọn ảnh
@@ -304,7 +314,8 @@ class _ProductVariantDetailsAdminScreenState
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                DiscountRateInputFormatter(),
               ],
               maxLines: isExpanded ? null : 1,
               onTap: () {
@@ -387,5 +398,19 @@ class _ProductVariantDetailsAdminScreenState
     _productCodeController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+}
+
+class DiscountRateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final intValue = int.tryParse(newValue.text);
+    if (intValue != null && intValue > 90) {
+      return oldValue;
+    }
+    return newValue;
   }
 }

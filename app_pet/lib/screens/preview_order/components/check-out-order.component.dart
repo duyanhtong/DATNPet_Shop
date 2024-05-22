@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/screens/checkout/paypal.screen.dart';
 import 'package:shop_app/screens/init_screen.dart';
-import 'package:shop_app/screens/preview_order/order_preview.screen.dart';
+
 import 'package:shop_app/services/api.dart';
 import '../../../constants.dart';
 import '../../../models/CartItem.model.dart';

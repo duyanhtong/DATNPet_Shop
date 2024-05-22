@@ -1,5 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/models/product.model.dart';
 
@@ -31,7 +33,9 @@ class _ProductDescriptionState extends State<ProductDescription> {
 
   Future<void> createWishList(int productId) async {
     String responseMessage = await Api.addProductToWishList(productId);
-    showCustomDialog(context, "Danh sách mong muốn", responseMessage);
+    if (mounted) {
+      showCustomDialog(context, "Danh sách mong muốn", responseMessage);
+    }
   }
 
   @override
@@ -54,16 +58,23 @@ class _ProductDescriptionState extends State<ProductDescription> {
 
   Future<void> checkProductInWishList() async {
     bool isInWishList = await Api.checkProductToWishList(widget.product.id);
-
-    setState(() {
-      _isFavorited = isInWishList;
-    });
+    if (mounted) {
+      setState(() {
+        _isFavorited = isInWishList;
+      });
+    }
   }
 
   void updateVariant(ProductVariantModel variant) {
     setState(() {
       currentVariant = variant;
     });
+  }
+
+  @override
+  void dispose() {
+    // Cancel any asynchronous operations or listeners here
+    super.dispose();
   }
 
   @override

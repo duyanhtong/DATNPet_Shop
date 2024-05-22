@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shop_app/components/custom_dialog.dart';
 import 'package:shop_app/screens/addresses/components/address.component.dart';
@@ -7,7 +9,7 @@ import 'package:shop_app/services/api.dart';
 import '../../../components/custom_surfix_icon.dart';
 import '../../../components/form_error.dart';
 import '../../../constants.dart';
-import '../../otp/otp_screen.dart';
+
 
 class CompleteProfileForm extends StatefulWidget {
   const CompleteProfileForm({super.key});
@@ -154,12 +156,11 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                   ward ?? '',
                   detailAddress ?? '',
                 );
-                print(message);
-
+               
                 if (message == "Cập nhật thông tin thành công") {
                   Navigator.pushNamed(context, SignInScreen.routeName);
                 } else {
-                  print(message);
+                  
                   showCustomDialog(context, "Đăng kí", message);
                 }
               }

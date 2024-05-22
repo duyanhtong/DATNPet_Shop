@@ -204,7 +204,6 @@ export class FeeShippingService {
         dataCalculateFee,
         this.config,
       );
-      console.log(response);
       return response.data.data.total;
     } catch (error) {
       throw new HttpException(
@@ -292,7 +291,7 @@ export class FeeShippingService {
   }
 
   async updateOrderStatusById(user_id: number): Promise<void> {
-    this.logger.debug('Run Update order by User');
+    this.logger.debug('Run Update order by User', user_id);
     const orders = await this.orderRepository.find({
       where: { user_id: user_id, status: Not(OrderStatusEnum.delivered) },
     });

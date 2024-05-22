@@ -44,4 +44,26 @@ class CartItem {
       'quantity': quantity,
     };
   }
+
+  CartItem copyWith({
+    int? id,
+    int? productVariantId,
+    String? productName,
+    String? productVariantName,
+    String? image,
+    int? price,
+    int? promotion,
+    int? quantity,
+  }) {
+    return CartItem(
+      id: id ?? this.id,
+      productVariantId: productVariantId ?? this.productVariantId,
+      productName: productName ?? this.productName,
+      productVariantName: productVariantName ?? this.productVariantName,
+      image: image ?? this.image,
+      price: price ?? this.price,
+      promotion: promotion ?? this.promotion,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 }

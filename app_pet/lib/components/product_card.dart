@@ -45,8 +45,14 @@ class ProductCard extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child:
-                          Image.network(product.imagePath, fit: BoxFit.cover),
+                      child: Image.network(
+                        product.imagePath,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Icon(Icons.error);
+                        },
+                      ),
                     ),
                   ),
                   if (!hasVariants) // Đã sửa để hiển thị khi isAdmin == true và không có variants

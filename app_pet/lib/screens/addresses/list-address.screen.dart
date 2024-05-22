@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop_app/components/custom_dialog.dart';
-import 'package:shop_app/components/custom_surfix_icon.dart';
-import 'package:shop_app/components/form_error.dart';
+
 import 'package:shop_app/constants.dart';
 import 'package:shop_app/models/Address.model.dart';
 import 'package:shop_app/screens/addresses/components/add_address_dialog.dart';
-import 'package:shop_app/screens/addresses/components/address.component.dart';
+
 import 'package:shop_app/screens/addresses/components/address_card.dart';
 import 'package:shop_app/screens/addresses/components/detail_address_dialog.dart';
-import 'package:shop_app/screens/complete_profile/components/complete_profile_form.dart';
-import 'package:shop_app/screens/home/home_screen.dart';
-import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
+
 import 'package:shop_app/services/api.dart';
 
 class ListAddressScreen extends StatefulWidget {
@@ -87,8 +84,8 @@ class _ListAddressScreenState extends State<ListAddressScreen> {
     if (selectedId != null) {
       setState(() => _loading = true);
       final result = await Api.updateDefaultAddress(selectedId);
+      // ignore: use_build_context_synchronously
       showCustomDialog(context, "Địa chỉ", result);
-      print(result);
       _refreshAddresses();
     }
   }
@@ -134,13 +131,13 @@ class _ListAddressScreenState extends State<ListAddressScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Danh sách địa chỉ',
           style: TextStyle(color: kPrimaryColor, fontSize: 16.0),
         ),
       ),
       body: _loading && _addresses.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
               controller: _scrollController,
               itemCount: _addresses.length,
@@ -158,6 +155,7 @@ class _ListAddressScreenState extends State<ListAddressScreen> {
                       await _loadAddresses();
                       _refreshAddresses();
                     } else {
+                      // ignore: use_build_context_synchronously
                       showCustomDialog(context, "Địa chỉ", result);
                       await _loadAddresses();
                       _refreshAddresses();
@@ -206,7 +204,7 @@ class _ListAddressScreenState extends State<ListAddressScreen> {
         onPressed: () {
           _showAddAddressDialog(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

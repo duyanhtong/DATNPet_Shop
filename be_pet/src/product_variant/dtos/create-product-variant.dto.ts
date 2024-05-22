@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class CreateProductVariantDto {
   @ApiProperty({
@@ -42,6 +42,7 @@ export class CreateProductVariantDto {
   @Type(() => Number)
   @IsOptional()
   @IsNumber()
+  @Max(90)
   discount_rate: number;
 
   @Transform(({ value }) => parseInt(value))

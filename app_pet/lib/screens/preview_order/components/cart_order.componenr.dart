@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:shop_app/components/custom_dialog.dart';
-import 'package:shop_app/services/api.dart';
+
 import '../../../constants.dart';
 import '../../../models/CartItem.model.dart';
 
@@ -37,6 +35,10 @@ class CartOrder extends StatelessWidget {
                   child: Image.network(
                     cartItem.image,
                     fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return const Icon(Icons.error);
+                    },
                   ),
                 ),
               ),
@@ -66,9 +68,9 @@ class CartOrder extends StatelessWidget {
                   children: [
                     Text(
                       "Số lượng: ${cartItem.quantity}",
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
                     ),
-                    Spacer(), // Đẩy giá tiền về phía bên phải
+                    const Spacer(), // Đẩy giá tiền về phía bên phải
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text.rich(

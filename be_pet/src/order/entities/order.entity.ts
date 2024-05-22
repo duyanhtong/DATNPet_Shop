@@ -39,8 +39,8 @@ export class Order {
   @Column('float')
   fee_shipping: number;
 
-  @Column('float')
-  total_weight: number;
+  // @Column('float')
+  // total_weight: number;
 
   @Column('varchar', { name: 'province', nullable: false, length: 100 })
   province: string;

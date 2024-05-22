@@ -124,19 +124,23 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 16,
                       ),
-                      itemBuilder: (context, index) => ProductCard(
-                        product: products[index],
-                        isAdmin: true,
-                        onPress: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetailsAdminScreen(
-                                  product: products[index]),
-                            ),
-                          ).then((_) =>
-                              _refreshData()), // Cập nhật lại dữ liệu khi quay trở lại
+                      itemBuilder: (context, index) => GestureDetector(
+                        onLongPress: () {
+                          _showDeleteDialog(products[index]);
                         },
+                        child: ProductCard(
+                          product: products[index],
+                          isAdmin: true,
+                          onPress: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailsAdminScreen(
+                                    product: products[index]),
+                              ),
+                            ).then((_) => _refreshData()),
+                          },
+                        ),
                       ),
                     ),
         ),
@@ -145,8 +149,58 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         onPressed: () {
           Navigator.pushNamed(context, AddProductScreen.routeName);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         backgroundColor: kPrimaryColor,
+      ),
+    );
+  }
+
+  void _showDeleteDialog(ProductModel product) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Sản phẩm',
+          style: TextStyle(color: kPrimaryColor),
+        ),
+        content: const Text('Bạn có chắc chắn muốn xóa sản phẩm này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(), 
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              String resultMessage = await Api.removeProduct(product.id);
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text(
+                    'Sản phẩm',
+                  ),
+                  content: Text(resultMessage == "OK"
+                      ? "Xoá Sản phẩm thành công"
+                      : resultMessage),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        if (resultMessage == "OK") {
+                          setState(() {
+                            products.remove(product);
+                          });
+                        }
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Tiếp tục'),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: const Text('Xóa'),
+          ),
+        ],
       ),
     );
   }

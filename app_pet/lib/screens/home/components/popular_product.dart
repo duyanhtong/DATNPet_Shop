@@ -20,7 +20,7 @@ class _PopularProductsState extends State<PopularProducts> {
   @override
   void initState() {
     super.initState();
-    productsFuture = Api.getAllProduct();
+    productsFuture = Api.getAllProduct(is_best_seller: 1);
   }
 
   @override
